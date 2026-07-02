@@ -49,7 +49,7 @@ jobs:
           google-chrome --version || true
 
       - name: Run Gradle task
-        run: ./gradlew ${{ inputs.gradle-task }} ${{ inputs.gradle-args }} --headless=true
+        run: ./gradlew ${{ inputs.gradle-task }} ${{ inputs.gradle-args }} -Dheadless=true
 
       - name: Upload test artifacts
         if: ${{ always() && inputs.upload-artifacts }}
