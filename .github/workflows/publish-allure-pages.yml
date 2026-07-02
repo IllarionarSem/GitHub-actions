@@ -1,0 +1,50 @@
+name: publish-allure-pages
+
+on:
+  workflow_call:
+    inputs:
+      allure-results-artifact:
+        type: string
+        required: false
+        default: "allure-results"
+
+      report-folder:
+        type: string
+        required: true
+
+jobs:
+  publish-allure:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download Allure results
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.allure-results-artifact }}
+          path: allure-results
+
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Generate Allure report
+        uses: simple-elf/allure-report-action@master
+        with:
+          allure_results: allure-results
+          gh_pages: gh-pages/${{ inputs.report-folder }}
+          allure_report: allure-report
+          allure_history: allure-history/${{ inputs.report-folder }}
+
+      - name: Deploy Allure report to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-history
+          keep_files: true

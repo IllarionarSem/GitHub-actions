@@ -1,4 +1,5 @@
-name: setup-java-test-env.yml
+name: setup-java-test-env
+
 on:
   workflow_call:
     inputs:
@@ -51,9 +52,9 @@ jobs:
       - name: Run Gradle task
         run: ./gradlew ${{ inputs.gradle-task }} ${{ inputs.gradle-args }}
 
-      - name: Upload test artifacts
-        if: ${{ always() && inputs.upload-artifacts }}
+      - name: Upload Allure results
         uses: actions/upload-artifact@v4
         with:
-          name: gradle-test-artifacts
-          path: "**/allure-results/"
+            name: allure-results
+            path: allure-results
+            if-no-files-found: 'warn'
