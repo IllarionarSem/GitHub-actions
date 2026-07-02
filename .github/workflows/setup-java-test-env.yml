@@ -49,14 +49,11 @@ jobs:
           google-chrome --version || true
 
       - name: Run Gradle task
-        run: ./gradlew ${{ inputs.gradle-task }} ${{ inputs.gradle-args }} -Dheadless=true
+        run: ./gradlew ${{ inputs.gradle-task }} ${{ inputs.gradle-args }}
 
       - name: Upload test artifacts
         if: ${{ always() && inputs.upload-artifacts }}
         uses: actions/upload-artifact@v4
         with:
           name: gradle-test-artifacts
-          path: |
-            **/build/reports/tests/
-            **/build/test-results/
-            **/build/allure-results/
+          path: "**/allure-results/"
