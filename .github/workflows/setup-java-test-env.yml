@@ -49,6 +49,9 @@ jobs:
           ./gradlew --version
           google-chrome --version || true
 
+      - name: Run Gradle task
+        run: ./gradlew ${{ inputs.gradle-task }} ${{ inputs.gradle-args }}
+
       - name: Debug Allure results
         if: always()
         run: |
