@@ -1,0 +1,34 @@
+name: build-summary
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        required: true
+      report-folder:
+        type: string
+        required: true
+      test-result:
+        type: string
+        required: true
+      allure-result:
+        type: string
+        required: true
+
+jobs:
+  summary:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add build summary
+        run: |
+          ALLURE_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ inputs.report-folder }}/"
+
+          echo "## Test run summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Item | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Environment | ${{ inputs.environment }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Test job result | ${{ inputs.test-result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Allure publish result | ${{ inputs.allure-result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Allure report | [Open report]($ALLURE_URL) |" >> $GITHUB_STEP_SUMMARY

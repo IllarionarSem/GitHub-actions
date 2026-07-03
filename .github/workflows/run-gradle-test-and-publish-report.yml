@@ -1,0 +1,53 @@
+name: run-gradle-test-and-publish-report
+
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        type: string
+        required: false
+        default: "17"
+
+      gradle-task:
+        type: string
+        required: true
+
+      gradle-args:
+        type: string
+        required: false
+        default: ""
+
+      environment:
+        type: string
+        required: true
+
+      report-folder:
+        type: string
+        required: true
+
+jobs:
+  all-tests:
+    uses: IllarionarSem/GitHub-actions/.github/workflows/setup-java-test-env.yml@main
+    with:
+      java-version: ${{ inputs.java-version }}
+      gradle-task: ${{ inputs.gradle-task }}
+      gradle-args: ${{ inputs.gradle-args }}
+      upload-artifacts: true
+
+  publish-allure:
+    needs: all-tests
+    if: always()
+    uses: IllarionarSem/GitHub-actions/.github/workflows/publish-allure-pages.yml@main
+    with:
+      allure-results-artifact: allure-results
+      report-folder: ${{ inputs.report-folder }}
+
+  summary:
+    needs: [all-tests, publish-allure]
+    if: always()
+    uses: IllarionarSem/GitHub-actions/.github/workflows/build-summary.yml@main
+    with:
+      environment: ${{ inputs.environment }}
+      report-folder: ${{ inputs.report-folder }}
+      test-result: ${{ needs.all-tests.result }}
+      allure-result: ${{ needs.publish-allure.result }}
