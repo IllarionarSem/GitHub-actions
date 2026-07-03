@@ -22,7 +22,7 @@ jobs:
     steps:
       - name: Add build summary
         run: |
-          ALLURE_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ inputs.report-folder }}/"
+          ALLURE_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ inputs.report-folder }}/${{ github.run_number }}/"
 
           echo "## Test run summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
